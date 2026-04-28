@@ -1,0 +1,22 @@
+services:
+  short-video-maker:
+    build:
+      context: .
+      dockerfile: main-tiny.Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DEV=false
+      - PORT=3023
+    ports:
+      - "3023:3023"
+    volumes:
+      - ./videos:/app/data/videos
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3023/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    entrypoint: ["node", "dist/index.js"]
